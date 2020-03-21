@@ -1,9 +1,10 @@
 <template>
   <div id="app">
     <Header/>
-    <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
-    <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-    <Main/>
+    <main>
+      <Main/>
+    </main>
+    <Footer/>
   </div>
 </template>
 
@@ -11,13 +12,15 @@
 // import HelloWorld from './components/HelloWorld.vue'
 import Main from './pages/Main';
 import Header from './components/Header';
+import Footer from './components/Footer';
 
 export default {
   name: 'App',
   components: {
     // HelloWorld,
     Main,
-    Header
+    Header,
+    Footer
   }
 }
 </script>
@@ -32,8 +35,9 @@ body, html {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+}
+
+main {
+  min-height: calc(100vh - 2 * 46px);
 }
 </style>
