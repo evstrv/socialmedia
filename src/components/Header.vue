@@ -10,7 +10,12 @@
             </nav>
         </div>
         <div class="login">
-            Login
+            <span @click="isFormOpen = !isFormOpen">Login</span>
+            <form action="" :class="{open: isFormOpen}">
+                <input type="email">
+                <input type="password">
+                <button>Login</button>
+            </form>
         </div>
     </header>
 </template>
@@ -21,7 +26,8 @@ export default Vue.extend({
     name: 'Header',
     data() {
         return {
-            isMenuOpen: false
+            isMenuOpen: false,
+            isFormOpen: false
         };
     }
 })
@@ -65,7 +71,7 @@ export default Vue.extend({
                     }
 
                     &:before {
-                        top: 65%;
+                        top: 60%;
                     }
                 }
 
@@ -127,14 +133,36 @@ export default Vue.extend({
             }
 
             &.login {
-                padding: 4px;
-                transition: .3s;
-                border-radius: 2px;
-
-                &:hover {
-                    cursor: pointer;
-                    background-color: rgba(120, 120, 120, .1);
+                span {
+                    padding: 4px;
                     transition: .3s;
+                    border-radius: 2px;
+
+                    &:hover {
+                        cursor: pointer;
+                        background-color: rgba(120, 120, 120, .1);
+                        transition: .3s;
+                    }
+                }
+
+                form {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    position: absolute;
+                    right: 0;
+                    border-radius: 3px;
+                    height: 0;
+                    overflow: hidden;
+                    transition: .3s;
+
+                    &.open {
+                        height: 136px;
+                        transition: .3s;
+                        box-shadow: 0 4px 8px 0 black;
+                        display: flex;
+                        background-color: white;
+                    }
                 }
             }
         }
