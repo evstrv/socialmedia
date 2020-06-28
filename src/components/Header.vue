@@ -3,7 +3,7 @@
         <div class="menu" :class="{open: isMenuOpen}">
             <span @click="isMenuOpen = !isMenuOpen"></span>
             <nav>
-                <a href="">Text</a>
+                <router-link to="/profile">Профиль</router-link>
                 <a href="">Text</a>
                 <a href="">Text</a>
                 <a href="">Text</a>
@@ -26,18 +26,21 @@ import Vue from 'vue'
 export default Vue.extend({
     name: 'Header',
     data() {
+        const isLogin = localStorage.getItem('id') && localStorage.getItem('login');
+
         return {
             isMenuOpen: false,
             isFormOpen: false,
             login: '',
-            password: ''
+            password: '',
+            isLogin: isLogin
         };
     },
-    computed: {
-        isLogin() {
-            return localStorage.getItem('id') && localStorage.getItem('login');
-        }
-    },
+    // computed: {
+    //     isLogin() {
+    //         return localStorage.getItem('id') && localStorage.getItem('login');
+    //     }
+    // },
     methods: {
         authorize(event) {
             event.preventDefault();
@@ -56,6 +59,7 @@ export default Vue.extend({
             ).then(res => res.json()).then(res => {
                 // console.log(res);
                 this.isFormOpen = false;
+                this.isLogin = true;
                 localStorage.setItem('id', res.userId);
                 localStorage.setItem('login', this.login);
             });
@@ -63,6 +67,7 @@ export default Vue.extend({
         logout() {
             localStorage.setItem('id', '');
             localStorage.setItem('login', '');
+            this.isLogin = false;
             this.login = '';
             this.password = '';
         }

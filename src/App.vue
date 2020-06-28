@@ -2,7 +2,7 @@
   <div id="app">
     <Header/>
     <main>
-      <Main/>
+      <router-view></router-view>
     </main>
     <Footer/>
   </div>
@@ -10,7 +10,7 @@
 
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
-import Main from './pages/Main';
+// import Main from './pages/Main';
 import Header from './components/Header';
 import Footer from './components/Footer';
 
@@ -18,7 +18,7 @@ export default {
   name: 'App',
   components: {
     // HelloWorld,
-    Main,
+    // Main,
     Header,
     Footer
   }
