@@ -7,40 +7,33 @@
             <div class="news"></div>
             <div class="form">
                 <h2 v-if="successRegistration">Вы успешно зарегистрированы!</h2>
-                <form action="">
+                <form action="" v-else>
                     <label for="">
-                        <span>Имя</span>
+                        <span>Название</span>
                         <input type="text" v-model="name" :class="{error: isError && !name}">
                         <span v-show="isError && !name">
-                            Введите имя!
+                            Введите название!
                         </span>
                     </label>
                     <label for="">
-                        <span>Фамилия</span>
-                        <input type="text" v-model="surname" :class="{error: isError && !surname}">
-                        <span v-show="isError && !surname">
-                            Введите фамилию!
+                        <span>Тип</span>
+                        <input type="text" v-model="type" :class="{error: isError && !type}">
+                        <span v-show="isError && !type">
+                            Введите тип!
                         </span>
                     </label>
                     <label for="">
-                        <span>Почта</span>
-                        <input type="email" v-model="email" :class="{error: isError && !email}">
-                        <span v-show="isError && !email">
-                            Введите почту!
+                        <span>Дата открытия</span>
+                        <input type="date" v-model="dateOpen" :class="{error: isError && !dateOpen}">
+                        <span v-show="isError && !dateOpen">
+                            Введите дату открытия!
                         </span>
                     </label>
                     <label for="">
-                        <span>Телефон</span>
-                        <input type="text" v-model="phone" :class="{error: isError && !phone}">
-                        <span v-show="isError && !phone">
-                            Введите телефон!
-                        </span>
-                    </label>
-                    <label for="">
-                        <span>Дата рождения</span>
-                        <input type="date" v-model="birthday" :class="{error: isError && !birthday}">
-                        <span v-show="isError && !birthday">
-                            Введите дату рождения!
+                        <span>Логин</span>
+                        <input type="text" v-model="login" :class="{error: isError && !login}">
+                        <span v-show="isError && !login">
+                            Введите логин!
                         </span>
                     </label>
                     <label for="">
@@ -70,10 +63,9 @@ export default {
     data() {
         return {
             name: '',
-            surname: '',
-            email: '',
-            phone: '',
-            birthday: '',
+            type: '',
+            dateOpen: '',
+            login: '',
             password: '',
             checkPass: '',
             needCheck: false,
@@ -83,7 +75,7 @@ export default {
     computed: {
         isError() {
             if(this.needCheck) {
-                return !(this.password === this.checkPass && this.name && this.surname && this.email && this.phone && this.birthday);
+                return !(this.password === this.checkPass && this.name && this.type && this.dateOpen && this.login);
             }
             return false;
         }
@@ -97,15 +89,14 @@ export default {
                     '//localhost/socialmedia/api/user/registration.php',
                     {
                         method: 'post',
-                        headeres: {
+                        headers: {
                             'Conten-Type': 'application/json'
                         },
                         body: JSON.stringify({
                             name: this.name,
-                            surname: this.surname,
-                            email: this.email,
-                            phone: this.phone,
-                            birthday: new Date(this.birthday).valueOf() / 1000,
+                            type: this.type,
+                            dateOpen: new Date(this.dateOpen).valueOf() / 1000,
+                            login: this.login,
                             password: this.password
                         })
                     }
@@ -113,10 +104,9 @@ export default {
                     console.log(res);
                     if(res && res.res) {
                         this.name = '';
-                        this.surname = '';
-                        this.email = '';
-                        this.phone = '';
-                        this.birthday = '';
+                        this.type = '';
+                        this.dateOpen = '';
+                        this.login = '';
                         this.password = '';
                         this.checkPass = '';
                         this.needCheck = false;

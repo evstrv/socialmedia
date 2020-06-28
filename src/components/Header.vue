@@ -10,11 +10,12 @@
             </nav>
         </div>
         <div class="login">
-            <span @click="isFormOpen = !isFormOpen">Login</span>
+            <span @click="isFormOpen = !isFormOpen" v-if="!isLogin">Войти</span>
+            <span @click="logout" v-else>Выйти</span>
             <form action="" :class="{open: isFormOpen}">
-                <input type="email">
-                <input type="password">
-                <button>Login</button>
+                <input type="text" placeholder="Введите логин" v-model="login">
+                <input type="password" placeholder="Введите пароль" v-model="password">
+                <button @click="authorize">Войти</button>
             </form>
         </div>
     </header>
@@ -27,8 +28,44 @@ export default Vue.extend({
     data() {
         return {
             isMenuOpen: false,
-            isFormOpen: false
+            isFormOpen: false,
+            login: '',
+            password: ''
         };
+    },
+    computed: {
+        isLogin() {
+            return localStorage.getItem('id') && localStorage.getItem('login');
+        }
+    },
+    methods: {
+        authorize(event) {
+            event.preventDefault();
+            fetch(
+                '//localhost/socialmedia/api/user/authorize.php',
+                {
+                    method: 'post',
+                    headers: {
+                       'Conten-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        login: this.login,
+                        password: this.password
+                    })
+                }
+            ).then(res => res.json()).then(res => {
+                // console.log(res);
+                this.isFormOpen = false;
+                localStorage.setItem('id', res.userId);
+                localStorage.setItem('login', this.login);
+            });
+        },
+        logout() {
+            localStorage.setItem('id', '');
+            localStorage.setItem('login', '');
+            this.login = '';
+            this.password = '';
+        }
     }
 })
 </script>
@@ -60,7 +97,8 @@ export default Vue.extend({
                         content: '';
                         width: 25px;
                         height: 3px;
-                        background-color: rgba(120, 120, 120, .8);
+                        // background-color: rgba(120, 120, 120, .8);
+                        background-color: rgb(120, 120, 120);
                         border-radius: 5px;
                         position: absolute;
                         left: 0;
@@ -157,11 +195,37 @@ export default Vue.extend({
                     transition: .3s;
 
                     &.open {
-                        height: 136px;
+                        height: 118px;
                         transition: .3s;
                         box-shadow: 0 4px 8px 0 black;
                         display: flex;
                         background-color: white;
+                    }
+
+                    input {
+                        border: 2px solid rgba(110, 110, 130, .8);
+                        padding: 4px 4px;
+                        border-radius: 3px;
+                        font-size: 1rem;
+                        margin: 5px;
+
+                        &.error {
+                            border-color: red;
+                        }
+                    }
+
+                    button {
+                        display: flex;
+                        border: 2px solid rgba(110, 110, 130, .8);
+                        padding: 2px 6px;
+                        border-radius: 2px;
+                        font-size: .9rem;
+                        font-weight: 500;
+                        margin: 5px 0;
+                        
+                        &:hover {
+                            cursor: pointer;
+                        }
                     }
                 }
             }
