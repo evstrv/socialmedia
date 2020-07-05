@@ -37,7 +37,22 @@
             $res = mysqli_query($link, $query);
             mysqli_close($link);
             die(json_encode(['res' => $res]));
+        } else if($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $query = "select login from users where id=".htmlspecialchars($_POST['userId'])." limit 1";
+            $resDb = mysqli_query($link, $query);
+
+            if($resDb && $user = mysqli_fetch_assoc($resDb)) {
+                $name = $user['login'].'avatar.jpg';
+                move_uploaded_file($_FILES['file']['tmp_name'], "/opt/lampp/htdocs/socialmedia/uploads/$name");
+                $query = "update users set avatar='//localhost/uploads/$name' where id=".htmlspecialchars($_POST['userId']);
+
+                if(mysqli_query($link, $query)) {
+                    die(json_encode(['res' => true, 'src' => "/uploads/$name"]));
+                }
+            }
+
+            die(json_encode(['res' => false]));
         }
     }
 
-    die();
+    die(json_encode(['res' => false]));

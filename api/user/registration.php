@@ -16,6 +16,19 @@
         $query = "INSERT INTO users(" . implode(',', array_keys($data)) . ") VALUES('" . implode("','", array_values($data)) . "')";
         $res = mysqli_query($link, $query);
 
+        $query = "select count(*) from users";
+        $countDb = mysqli_query($link, $query);
+
+        if($res && $count = mysqli_fetch_assoc($countDb)) {
+            $query = "insert into news(`title`, `description`, `author`)
+                values(
+                    'Нас стало больше',
+                    'Ура! Нас теперь {$count['count(*)']} на нашем дружном вирусном портале!',
+                    'Команда Bacterium, Inc'
+                )";
+            mysqli_query($link, $query);
+        }
+
         mysqli_close($link);
         die(json_encode(['res' => $res]));
     } 

@@ -4,7 +4,16 @@
 
         </div>
         <div class="body">
-            <div class="news"></div>
+            <div class="news">
+                <div class="article" v-for="(item, id) in news" :key="`article_${id}`">
+                    <div class="head">
+                        <div>{{ item.title }}</div>
+                        <div>{{ item.date }}</div>
+                    </div>
+                    <div class="description">{{ item.description }}</div>
+                    <div class="author">{{ item.author }}</div>
+                </div>
+            </div>
             <div class="form">
                 <h2 v-if="successRegistration">Вы успешно зарегистрированы!</h2>
                 <form action="" v-else>
@@ -69,7 +78,8 @@ export default {
             password: '',
             checkPass: '',
             needCheck: false,
-            successRegistration: false
+            successRegistration: false,
+            news: []
         };
     },
     computed: {
@@ -117,6 +127,19 @@ export default {
                 });
             }
         }
+    }, 
+    mounted () {
+        fetch(
+            '//localhost/socialmedia/api/news/index.php',
+            {
+                headers: {
+                    'Cntent-Type': 'application/json'
+                }
+            }
+        ).then(res => res.json()).then(res => {
+            // console.log(res);
+            this.news = res;
+        });
     }
 }
 </script>
@@ -141,6 +164,47 @@ export default {
             .news {
                 width: 60%;
                 height: 100%;
+                margin-top: 2rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+
+                .article {
+                    width: 80%;
+                    margin-bottom: 1rem;
+
+                    .head {
+                        display: flex;
+                        justify-content: space-between; 
+                        margin-bottom: .5rem;
+
+                        div {
+                            &:first-child {
+                                font-size: 1.4rem;
+                            }
+                            &:last-child {
+                                color: red;
+                                font-size: .9rem;
+                            }
+                        }
+                    }
+
+                    .description {
+                        width: 100%;
+                        box-sizing: border-box;
+                        padding-left: 2rem;
+                        // margin-bottom: .5rem;
+                        font-size: 1.1rem;
+                        font-style: italic;
+                    }
+
+                    .author {
+                        text-align: end;
+                        font-size: .9rem;
+                        font-weight: 600;
+                    }
+                }
             }
 
             .form {

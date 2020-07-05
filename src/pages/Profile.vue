@@ -1,7 +1,23 @@
 <template>
     <div class="profile">
         <div class="body">
-            <div class="news"></div>
+            <div class="menu">
+                <div class="card">
+                    <div class="head">
+                        <label>
+                            <img :src="avatar" :alt="name">
+                            <span>Изменить</span>
+                            <input type="file" name="avatar" @change="upload">
+                        </label>
+                        <div>{{name}}</div>
+                    </div>
+                    <div class="body">
+                        <div>Личный данные</div>
+                        <div>Приватность</div>
+                        <div>Настройки</div>
+                    </div>
+                </div>
+            </div>
             <div class="form">
                 <form action="">
                     <label for="">
@@ -65,7 +81,8 @@
                 password: '',
                 checkPass: '',
                 needCheck: false,
-                successRegistration: false
+                successRegistration: false,
+                avatar: ''
             };
         },
         computed: {
@@ -104,6 +121,28 @@
                         console.log(res);
                     });
                 }
+            },
+            upload(event) {
+                console.log(event);
+                const data = new FormData();
+                data.append('file', event.target.files[0]);
+                data.append('userId', localStorage.getItem('id'));
+
+                fetch(
+                    '//localhost/socialmedia/api/user/user.php',
+                    {
+                        method: 'post',
+                        // headers: {
+                        //     'Content-Type': 'multipart/form-data'
+                        // },
+                        body: data
+                    }
+                ).then(res => res.json()).then(res => {
+                    // console.log(res);
+                    if(res.res) {
+                        this.avatar = res.src;
+                    }
+                });
             }
         },
         mounted() {
@@ -118,10 +157,18 @@
             ).then(res => res.json()).then(res => {
                 console.log(res);
                 const date = new Date(+res.user.dateOpen * 1000);
+                let strDate = date.getFullYear() + '-';
+                const month = '' + date.getMonth();
+                const day = '' + date.getDate();
+
+                strDate += (month.length < 2 ? '0' + month : month) + '-';
+                strDate += (day.length < 2 ? '0' + day : day);
+
                 this.name = res.user.name;
                 this.type = res.user.type;
-                this.dateOpen = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+                this.dateOpen = strDate;
                 this.login = res.user.login;
+                this.avatar = res.user.login || '../assets/noimage.png';
             });
         }
     }
@@ -139,13 +186,103 @@
             width: 100%;
             display: flex;
 
-            .news {
-                width: 60%;
+            .menu {
+                width: 30%;
                 height: 100%;
+
+                .card {
+                    display: flex;
+                    flex-direction: column;
+                    margin: 3rem auto 0;
+                    width: 80%;
+                    background-color: white;
+                    box-shadow: 0 0 12px rgba(0, 0, 0, .1);
+                    box-sizing: border-box;
+                    border-radius: 3px;
+
+                    .head {
+                        text-align: center;
+                        padding: 1rem;
+                        box-sizing: border-box;
+
+                        label {
+                            width: 120px;
+                            height: 120px;
+                            border-radius: 50%;
+                            overflow: hidden;
+                            position: relative;
+                            display: flex;
+                            margin: 0 auto;
+
+                            img {
+                                width: 100%;
+                                height: 100%;
+                            }
+
+                            span {
+                                display: flex;
+                                opacity: 0;
+                                position: absolute;
+                                width: 100%;
+                                height: 100%;
+                                align-items: center;
+                                justify-content: center;
+                                background-color: rgba(0, 0, 0, .4);
+                                font-size: 1.1rem;
+                                transition: .5s;
+                                color: white;
+                                letter-spacing: -.8px;
+                                font-weight: 600;
+                                border-radius: 50%;
+                            }
+                            
+                            input {
+                                display: none;
+                            }
+
+                            &:hover {
+                                cursor: pointer;
+
+                                span {
+                                    opacity: 1;
+                                    transition: .5s;
+                                }
+                            }
+                        }
+
+                        div {
+                            font-size: 1.7rem;
+                            font-weight: 600;
+                        }
+                    }
+
+                    .body {
+                        display: flex;
+                        flex-direction: column;
+                        box-sizing: border-box;
+                        border-top: 2px solid rgba(0, 0, 0, .3);
+                        
+                        > div {
+                            padding: 1rem;
+                            box-sizing: border-box;
+                            transition: .5s;
+
+                            &:not(:last-child) {
+                                border-bottom: .5px solid rgba(0, 0, 0, .3);
+                            }
+
+                            &:hover {
+                                background-color: rgba(0, 0, 0, .1);
+                                transition: .5s;
+                                cursor: pointer;
+                            }
+                        }
+                    }
+                }
             }
 
             .form {
-                width: 40%;
+                width: 70%;
                 height: 100%;
                 padding: 16px 0 0 16px;
                 box-sizing: border-box;
@@ -160,6 +297,7 @@
                     display: flex;
                     flex-direction: column;
                     width: 80%;
+                    margin: 0 auto;
 
                     label {
                         display: flex;
