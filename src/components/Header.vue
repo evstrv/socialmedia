@@ -1,12 +1,10 @@
 <template>
     <header>
-        <div class="menu" :class="{open: isMenuOpen}">
+        <div class="menu" :class="{open: isMenuOpen}" v-if="isLogin">
             <span @click="isMenuOpen = !isMenuOpen"></span>
             <nav>
                 <router-link to="/profile">Профиль</router-link>
-                <a href="">Text</a>
-                <a href="">Text</a>
-                <a href="">Text</a>
+                <router-link to="/users">Пользователи</router-link>
             </nav>
         </div>
         <div class="login">

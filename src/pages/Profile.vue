@@ -168,7 +168,7 @@
                 this.type = res.user.type;
                 this.dateOpen = strDate;
                 this.login = res.user.login;
-                this.avatar = res.user.login || '../assets/noimage.png';
+                this.avatar = res.user.avatar || '//localhost/socialmedia/src/assets/noimage.png';
             });
         }
     }

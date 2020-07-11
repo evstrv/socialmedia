@@ -43,11 +43,11 @@
 
             if($resDb && $user = mysqli_fetch_assoc($resDb)) {
                 $name = $user['login'].'avatar.jpg';
-                move_uploaded_file($_FILES['file']['tmp_name'], "/opt/lampp/htdocs/socialmedia/uploads/$name");
-                $query = "update users set avatar='//localhost/uploads/$name' where id=".htmlspecialchars($_POST['userId']);
+                move_uploaded_file($_FILES['file']['tmp_name'], "/xampp/htdocs/socialmedia/uploads/$name");
+                $query = "update users set avatar='//localhost/socialmedia/uploads/$name' where id=".htmlspecialchars($_POST['userId']);
 
                 if(mysqli_query($link, $query)) {
-                    die(json_encode(['res' => true, 'src' => "/uploads/$name"]));
+                    die(json_encode(['res' => true, 'src' => "//localhost/socialmedia/uploads/$name"]));
                 }
             }
 
