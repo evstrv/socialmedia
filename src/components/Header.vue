@@ -7,6 +7,10 @@
                 <router-link to="/users">Пользователи</router-link>
             </nav>
         </div>
+        <div class="notification">
+            <img :src="notificationImg">
+            <span class="count">0</span>
+        </div>
         <div class="login">
             <span @click="isFormOpen = !isFormOpen" v-if="!isLogin">Войти</span>
             <span @click="logout" v-else>Выйти</span>
@@ -31,7 +35,9 @@ export default Vue.extend({
             isFormOpen: false,
             login: '',
             password: '',
-            isLogin: isLogin
+            isLogin: isLogin,
+            notificationImg: require('../assets/notification.png'),
+            notifications: []
         };
     },
     // computed: {
@@ -69,6 +75,18 @@ export default Vue.extend({
             this.login = '';
             this.password = '';
         }
+    },
+    mounted() {
+        fetch(
+            `//localhost/socialmedia/api/notification.php?id=${localStorage.getItem('id')}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }
+        ).then(res => res.json()).then(res => {
+            this.notifications = res.notifications || [];
+        });
     }
 })
 </script>
@@ -230,6 +248,27 @@ export default Vue.extend({
                             cursor: pointer;
                         }
                     }
+                }
+            }
+
+            &.notification {
+                display: flex;
+                position: relative;
+                img {
+                    width: 20px
+                }
+
+                span.count {
+                   border-radius: 50%;
+                   background-color: lightseagreen; 
+                   color: white;
+                   right: -10px;
+                   top: -5px;
+                   position: absolute;
+                   font-size: 10px;
+                   padding: 3px 5px;
+                   font-weight: 600;
+                   line-height: 9px;
                 }
             }
         }

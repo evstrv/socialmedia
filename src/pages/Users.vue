@@ -4,13 +4,14 @@
         <div class="users-list">
             <div class="item" v-for="(item, id) in users" :key="`user_item_${id}`">
                 <div class="img">
-                    <img :src="item.avatar || noImage" :alt="name">
+                    <img :src="item.avatar || noImage" :alt="item.name">
                 </div>
                 <div class="info">
                     <div class="name">{{ item.name }} <span v-if="item.id === userId">Это вы</span></div>
                     <div class="type">{{ item.type }}</div>
-                    <div class="button" v-if="item.id !== userId" @click="submitRequestFriend(item.id)">
-                        <button>Добавить в друзья</button>
+                    <div class="button" v-if="item.id !== userId">
+                        <button @click="submitRequestFriend(item.id)" v-if="!requests[item.id]">Добавить в друзья</button>
+                        <button v-else-if="requests[item.id]" @click="removeRequest(requests[item.id], item.id)">Отозвать заявку</button>
                     </div>
                 </div>
             </div>
@@ -26,13 +27,14 @@ export default {
             users: [],
             search: '',
             noImage: '//localhost/socialmedia/src/assets/noimage.png',
-            userId: localStorage.getItem('id')
+            userId: localStorage.getItem('id'),
+            requests: {}
         };
     },
     methods: {
         submitRequestFriend(friendId) {
             fetch(
-                '//localhost/socialmedia/api/users/friends.php',
+                '//localhost/socialmedia/api/notification.php',
                 {
                     headers: {
                         'Content-Type': 'application/json'
@@ -40,11 +42,31 @@ export default {
                     method: 'post',
                     body: JSON.stringify({
                         userId: this.userId,
-                        friendId
+                        otherId: friendId,
+                        type: 'ADD_FRIEND'
                     })
                 }
             ).then(res => res.json()).then(res => {
-                console.log(res);
+                const requests = {...this.requests};
+                requests[friendId] = res.id;
+                this.requests = {...requests};
+            });
+        },
+        removeRequest(notificationId, friendId) {
+            fetch(
+                `//localhost/socialmedia/api/notification.php?id=${notificationId}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'delete'
+                }
+            ).then(res => res.json()).then(res => {
+                if(res.res) {
+                    const requests = {...this.requests};
+                    delete requests[friendId];
+                    this.requests = {...requests};
+                }
             });
         }
     },
@@ -59,6 +81,7 @@ export default {
         ).then(res => res.json()).then(res => {
             console.log(res);
             this.users = res.users || [];
+            this.requests = res.requests || {};
         });
     }
 }
@@ -136,6 +159,15 @@ export default {
                         display: flex;
                         align-items: center;
                         justify-content: flex-end;
+                        
+                        // button {
+                        //     border: none;
+                        //     background-color: lightseagreen;
+                        //     color: white;
+                        //     padding: .6rem 1rem;
+                        //     font-size: 1rem;
+                        //     border-radius: 4px;
+                        // }
                         
                         button {
                             border: none;
