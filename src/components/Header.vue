@@ -93,14 +93,14 @@ export default Vue.extend({
 
 <style lang="scss" scoped>
     header {
-        box-shadow: 0 0 8px 0 black;
-        width: 100%;
-        padding: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-sizing: border-box;
-        background-color: white;
+            box-shadow: 0 0 8px 0 black;
+            width: 100%;
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+            background-color: white;
 
         > div {
             &.menu {
@@ -255,7 +255,7 @@ export default Vue.extend({
                 display: flex;
                 position: relative;
                 img {
-                    width: 20px
+                    width: 20px;
                 }
 
                 span.count {
@@ -268,7 +268,7 @@ export default Vue.extend({
                    font-size: 10px;
                    padding: 3px 5px;
                    font-weight: 600;
-                   line-height: 9px;
+                   line-height: 10px;
                 }
             }
         }
