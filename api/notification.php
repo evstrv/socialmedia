@@ -25,7 +25,7 @@
             mysqli_close($link);
             die(json_encode(['res' => $res]));
         } else if($_SERVER['REQUEST_METHOD'] === 'GET') {
-            $query = "select * from notification where userId=".htmlspecialchars($_GET['id']);
+            $query = "select * from notification where otherId=".htmlspecialchars($_GET['id']);
             $resDb = mysqli_query($link, $query);  
             $res = [];
 
@@ -34,7 +34,7 @@
             }
 
             mysqli_close($link);
-            die(json_encode(['res' => true, 'notification' => $res]));
+            die(json_encode(['res' => true, 'notifications' => $res]));
         }
     }
 

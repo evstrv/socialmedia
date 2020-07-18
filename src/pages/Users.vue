@@ -7,7 +7,7 @@
                     <img :src="item.avatar || noImage" :alt="item.name">
                 </div>
                 <div class="info">
-                    <div class="name">{{ item.name }} <span v-if="item.id === userId">Это вы</span></div>
+                    <div class="name" @click="$router.push(`/users/${item.id}`)">{{ item.name }} <span v-if="item.id === userId">Это вы</span></div>
                     <div class="type">{{ item.type }}</div>
                     <div class="button" v-if="item.id !== userId">
                         <button @click="submitRequestFriend(item.id)" v-if="!requests[item.id]">Добавить в друзья</button>
@@ -139,6 +139,10 @@ export default {
                     .name {
                         font-size: 2rem;
                         margin-bottom: 1rem;
+
+                        &:hover {
+                            cursor: pointer;
+                        }
                         
                         span {
                             color: green;
@@ -159,15 +163,6 @@ export default {
                         display: flex;
                         align-items: center;
                         justify-content: flex-end;
-                        
-                        // button {
-                        //     border: none;
-                        //     background-color: lightseagreen;
-                        //     color: white;
-                        //     padding: .6rem 1rem;
-                        //     font-size: 1rem;
-                        //     border-radius: 4px;
-                        // }
                         
                         button {
                             border: none;

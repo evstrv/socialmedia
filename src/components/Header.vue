@@ -7,9 +7,22 @@
                 <router-link to="/users">Пользователи</router-link>
             </nav>
         </div>
-        <div class="notification">
-            <img :src="notificationImg">
-            <span class="count">0</span>
+        <div class="notification"  v-if="isLogin" :class="{open: (isNoticeOpen && notifications.length > 0)}">
+            <img :src="notificationImg" @click="isNoticeOpen = !isNoticeOpen">
+            <span class="count">{{ notifications.length }}</span>
+            <div>
+                <div class="item" v-for="(item, id) in notifications" :key="`notice_${id}`">
+                    <div>
+                        <span v-if="item.type === 'ADD_FRIEND'">
+                            Вас хотят добавить в друзья!
+                        </span>
+                    </div>
+                    <div v-if="item.type === 'ADD_FRIEND'">
+                        <button @click="acceptFriend(id)">Принять</button>
+                        <button @click="removeNotice(id)">Отклонить</button>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="login">
             <span @click="isFormOpen = !isFormOpen" v-if="!isLogin">Войти</span>
@@ -37,7 +50,8 @@ export default Vue.extend({
             password: '',
             isLogin: isLogin,
             notificationImg: require('../assets/notification.png'),
-            notifications: []
+            notifications: [],
+            isNoticeOpen: false
         };
     },
     // computed: {
@@ -74,6 +88,36 @@ export default Vue.extend({
             this.isLogin = false;
             this.login = '';
             this.password = '';
+        },
+        submitFriend(id) {
+            fetch(
+                '//localhost/socialmedia/api/users.php',
+                {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userId: this.notifications[id].userId,
+                        friendId: this.notifications[id].otherId
+                    })
+                }
+            ).then(res => res.json()).then(() => {
+                this.removeNotice(id);
+            });
+        },
+        removeNotice(id) {
+            fetch(
+                `//localhost/socialmedia/api/notification.php?id=${this.notifications[id].ids}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    method: 'delete'
+                }
+            ).then(res => res.json()).then(() => {
+                this.notifications.splice(id, 1);
+            });
         }
     },
     mounted() {
@@ -254,8 +298,13 @@ export default Vue.extend({
             &.notification {
                 display: flex;
                 position: relative;
+
                 img {
-                    width: 20px
+                    width: 20px;
+                    
+                    &:hover {
+                        cursor: pointer;
+                    }
                 }
 
                 span.count {
@@ -269,6 +318,57 @@ export default Vue.extend({
                    padding: 3px 5px;
                    font-weight: 600;
                    line-height: 9px;
+                }
+
+                > div {
+                    display: none;
+                    position: absolute;
+                    top: calc(100% + 5px);
+                    width: 350px;
+                    left: -175px;
+                    box-shadow: 0 4px 8px 0 black;
+                    background-color: #fff;
+                    padding: .5rem;
+
+                    > .item {
+                        display: flex;
+                        width: 100%;
+                        justify-content: space-between;
+                        align-items: center;
+
+                        > div:last-child {
+                            display: flex;
+                            flex-direction: column;
+
+                            > button {
+                                background-color: lightseagreen;
+                                color: white;
+                                border-radius: 4px;
+                                padding: .3rem .5rem;
+                                border: none;
+
+                                &:hover {
+                                    cursor: pointer;
+                                }
+
+                                &:first-child {
+                                    margin-bottom: 5px;
+                                }
+                            }
+                        }
+
+                        &:not(:last-child) {
+                            padding-bottom: .5rem;
+                            margin-bottom: .5rem;
+                            border-bottom: 1px solid grey;
+                        }
+                    }
+                }
+
+                &.open {
+                    > div {
+                        display: flex;
+                    }
                 }
             }
         }
