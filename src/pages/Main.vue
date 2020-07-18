@@ -87,7 +87,7 @@ export default {
             if(this.needCheck) {
                 return !(this.password === this.checkPass && this.name && this.type && this.dateOpen && this.login);
             }
-            return false;
+            return false;   
         }
     },
     methods: {
