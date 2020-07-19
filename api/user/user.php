@@ -13,8 +13,14 @@
             foreach($_GET as $key=>&$item) {
                 $data[$key] = htmlspecialchars($item);
             }
-    
-            $query = "SELECT * FROM users WHERE id={$data['id']} limit 1";
+            
+            $query = "SELECT users.id, name, avatar, type, dateOpen, 
+                        (select status from statuses 
+                            where statuses.userId=users.id 
+                            order by statuses.id desc limit 1) as status 
+                        FROM users 
+                        JOIN friends on friends.user=users.id or friends.friend=users.id
+                        WHERE id={$data['id']} limit 1";
             $res = mysqli_fetch_assoc(mysqli_query($link, $query));
             mysqli_close($link);
     

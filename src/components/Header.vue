@@ -43,6 +43,10 @@ export default Vue.extend({
     data() {
         const isLogin = localStorage.getItem('id') && localStorage.getItem('login');
 
+        if(isLogin) {
+            this.setStatus('online', localStorage.getItem('id'));
+        }
+
         return {
             isMenuOpen: false,
             isFormOpen: false,
@@ -80,9 +84,11 @@ export default Vue.extend({
                 this.isLogin = true;
                 localStorage.setItem('id', res.userId);
                 localStorage.setItem('login', this.login);
+                this.setStatus('online', res.userId);
             });
         },
         logout() {
+            this.setStatus('offline', localStorage.getItem('id'));
             localStorage.setItem('id', '');
             localStorage.setItem('login', '');
             this.isLogin = false;
@@ -118,6 +124,21 @@ export default Vue.extend({
             ).then(res => res.json()).then(() => {
                 this.notifications.splice(id, 1);
             });
+        },
+        setStatus(status, userId) {
+            fetch(
+                `//localhost/socialmedia/api/status.php`,
+                {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        status,
+                        userId
+                    })
+                }
+            );
         }
     },
     mounted() {
@@ -131,6 +152,9 @@ export default Vue.extend({
         ).then(res => res.json()).then(res => {
             this.notifications = res.notifications || [];
         });
+    },
+    destroyed() {
+        this.setStatus('offline', localStorage.getItem('id'));
     }
 })
 </script>

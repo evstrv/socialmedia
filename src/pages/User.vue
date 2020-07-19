@@ -6,7 +6,7 @@
             </div>
         </div>
         <div class="desc">
-            <h1>{{ user.name }}<span class="online">Онлайн</span></h1>
+            <h1>{{ user.name }}<span :class="user.status && user.status === 'online' ? 'online' : 'offline'">{{ user.status && user.status === 'online' ? 'В сети' : 'Не в сети' }}</span></h1>
             <h3>{{ user.type }}</h3>
             <div class="date">Дата открытия: <span>{{ user.dateOpen }}</span></div>
         </div>
